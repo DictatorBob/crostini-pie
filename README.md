@@ -20,7 +20,7 @@ It's just a bash script. Since a new Crostini container doesn't have git, just d
 
 ```
 curl -o crostini-pie.sh https://github.com/DictatorBob/crostini-pie/blob/master/crostini-pie.sh
-sh crostini-pie.sh
+bash crostini-pie.sh
 ```
 # What exactly does it do?
 First of all, for every step or function that it executes, it will prompt you first. If you don't want it to do a thing, simply reply to the prompt with a single lower-case "n". If you want it to do the thing, press Enter. You can also type in arguments for the function, if it needs any. For example, in the case of the terraform and packer installer, you can specify the version, and it will download/install exactly that.
@@ -29,7 +29,7 @@ When you run the script, it will:
 1. Set the hostname for the container **guest**. It's not renaming the LXD container, which has to be named "penguin" for the Google-provided app shortcut to find it. It simply sets the hostname of your guest OS.
 2. It creates new apt sources in /etc/apt/sources.list.d to make available additional Debian repos (backports, contrib, non-free). If you're a Free Software advocate, you should edit those appropriately (but of course, the PixelBook and ChromeOS are already not technically free software).
 3. It adds a selection of software packages from the apt repos. In the shell script, these packages are defined in two lists: "required" and "optional". Those names are pretty self-explanatory. You won't be prompted for the stuff in the required list, but for every package listed in "optional" you'll have the opportunity to hit Enter to add it or "n" to skip it. It should be trivial to edit the script and add your own choices to the list
-4. It installs termite from source. This happens to be my favourite terminal emulator. Skip it if you prefer another. The install script is more or less verbatim from here: https://github.com/Corwind/termite-install/blob/master/termite-install.sh except with slight modifications to use stow. **Warning: Adds a lot of packages**
+4. It installs termite from source. This happens to be my favourite terminal emulator. Skip it if you prefer another. The install script is more or less verbatim from here: https://github.com/Corwind/termite-install/blob/master/termite-install.sh. **Warning: Adds a lot of packages**
 5. It installs emacs from source. This is a lengthy process, so skip if you're not an Emacs user. **Warning: Lengthy compile time, adds a lot of packages**
 6. It installs terraform and packer (binary downloads) and ansible (from the official ansible ppa)
 
