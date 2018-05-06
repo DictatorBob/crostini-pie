@@ -20,7 +20,7 @@ It's just a bash script. Since a new Crostini container doesn't have git, just d
 
 ```
 curl -o crostini-pie.sh https://github.com/DictatorBob/crostini-pie/blob/master/crostini-pie.sh
-sh crostini-pie.sh
+bash crostini-pie.sh
 ```
 # What exactly does it do?
 First of all, for every step or function that it executes, it will prompt you first. If you don't want it to do a thing, simply reply to the prompt with a single lower-case "n". If you want it to do the thing, press Enter. You can also type in arguments for the function, if it needs any. For example, in the case of the terraform and packer installer, you can specify the version, and it will download/install exactly that.
