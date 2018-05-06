@@ -19,7 +19,7 @@ For my purposes, backports mostly does the job, but some things are built from s
 It's just a bash script. Since a new Crostini container doesn't have git, just download it with curl, and execute it (give it a read-through first).
 
 ```
-curl -o crostini-pie.sh https://github.com/DictatorBob/crostini-pie/blob/master/crostini-pie.sh
+curl -o crostini-pie.sh https://raw.githubusercontent.com/DictatorBob/crostini-pie/master/crostini-pie.sh
 bash crostini-pie.sh
 ```
 # What exactly does it do?
