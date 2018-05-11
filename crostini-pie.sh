@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 required="build-essential pkg-config git stow"
-optional="gnupg tmux rsync mosh"
-
+optional="gnupg tmux rsync mosh wget"
+extras="bc keychain vim-nox fonts-noto mu4e"
 
 ingredients="sethostname \
         setrepos \
         backports \
+        extras \
         termite \
+        fish-shell \
         ansible \
         terraform \
         packer \
@@ -48,7 +50,7 @@ EOF
             for pkg in ${optional}; do
                     read -p "#### Install ${pkg}? (Y/n)" yorn
                     case ${yorn} in
-                        n) 
+                        n)
                             echo "#### Skipping ${pkg}"
                             ;;
                         *)
@@ -57,15 +59,32 @@ EOF
                             ;;
                     esac
             done
+            ;;
 
+        extras)
+            # Steps through a list of packages to install, all from backports by default
+
+            final=""
+            echo "## Hit Enter to add packages from the EXTRAS to the list to be installed, or n to skip it"
+            for pkg in ${extras}; do
+                    read -p "#### Install ${pkg}? (Y/n)" yorn
+                    case ${yorn} in
+                        n)
+                            echo "#### Skipping ${pkg}"
+                            ;;
+                        *)
+                            echo "#### Adding ${pkg} to the install list"
+                            final="${final} ${pkg}"
+                            ;;
+                    esac
+            done
             echo "##### Final list of packages:"
             echo "${final}"
-            sudo apt-get -y -t stretch-backports install ${required} ${final}
+            sudo apt-get -y -t stretch-backports install ${final}
             ;;
 
         termite)
             # from https://github.com/Corwind/termite-install/blob/master/termite-install.sh
-
             sudo apt-get install -y \
                 git \
                 g++ \
@@ -80,10 +99,10 @@ EOF
                 libgirepository1.0-dev \
                 libxml2-utils \
                 gperf
-                
+
             git clone --recursive https://github.com/thestinger/termite.git
             git clone https://github.com/thestinger/vte-ng.git
-            
+
             echo export LIBRARY_PATH="/usr/include/gtk-3.0:$LIBRARY_PATH"
             cd vte-ng && ./autogen.sh && make && sudo make install
             cd ../termite && make && sudo make install
@@ -91,10 +110,21 @@ EOF
             sudo mkdir -p /lib/terminfo/x; sudo ln -s \
             /usr/local/share/terminfo/x/xterm-termite \
             /lib/terminfo/x/xterm-termite
-            
+
             sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/local/bin/termite 60
             ;;
-            
+
+        fish-shell)
+            # From: https://software.opensuse.org/download.html?project=shells%3Afish%3Arelease%3A2&package=fish
+            sudo sh -c 'cat > /etc/apt/sources.list.d/shells:fish:release:2.list' << EOF
+            deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_9.0/ /
+EOF
+            wget -nv https://download.opensuse.org/repositories/shells:fish:release:2/Debian_9.0/Release.key -O fishshell.key
+            sudo apt-key add - < fishshell.key
+            sudo apt-get update
+            sudo apt install fish
+            ;;
+
         ansible)
             #Source: http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-debian
             # When you run the next command you'll get an error about the gpg key for the ansible ppa
@@ -137,9 +167,9 @@ EOF
         emacs)
             git clone -b master git://git.sv.gnu.org/emacs.git
             sudo apt-get -y install build-essential automake texinfo libjpeg-dev libncurses5-dev
-            sudo apt-get -y install libtiff5-dev libgif-dev libpng-dev libxpm-dev libgtk-3-dev libgnutls28-dev 
+            sudo apt-get -y install libtiff5-dev libgif-dev libpng-dev libxpm-dev libgtk-3-dev libgnutls28-dev
             cd emacs/
-            ./autogen.sh 
+            ./autogen.sh
             ./configure --with-mailutils --prefix=/usr/local/stow/emacs
             make
             sudo make install
@@ -160,7 +190,7 @@ function doyouwant {
     case ${choice} in
         n|N)    echo "## Skipping $1"
             ;;
-        *)  echo "## Executing $1" 
+        *)  echo "## Executing $1"
             add_ingredient $1 $choice
             ;;
     esac
