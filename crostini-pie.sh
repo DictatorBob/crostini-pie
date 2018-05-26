@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 required="build-essential pkg-config git stow"
-optional="gnupg tmux rsync mosh wget"
+optional="gnupg tmux rsync mosh wget iputils-ping dnsutils"
 extras="bc keychain vim-nox fonts-noto mu4e"
 
 ingredients="sethostname \
@@ -55,10 +55,13 @@ EOF
                             ;;
                         *)
                             echo "#### Adding ${pkg} to the install list"
-                            final="${final} ${pkg}"
+                            final="${final} ${required} ${pkg}"
                             ;;
                     esac
             done
+            echo "##### Final list of packages:"
+            echo "${final}"
+            sudo apt-get -y -t stretch-backports install ${final}
             ;;
 
         extras)
